@@ -168,14 +168,12 @@ grade(102,'Круглотличников','Английский язык',2).
 grade(102,'Круглотличников','Психология',4).
 
 
-% Реализация предиката проверки, что студент сдал все экзамены (все оценки >= 3):
 student_all_exams_passed(Student) :-
     findall(Grade, grade(_, Student, _, Grade), Grades),
     Grades \= [],
     min_list(Grades, Min),
     Min >= 4.
 
-% Реализация предиката вычисления среднего балла студента:
 student_average_grade(Student, Avg) :-
     findall(Grade, grade(_, Student, _, Grade), Grades),
     Grades \= [],
@@ -183,8 +181,7 @@ student_average_grade(Student, Avg) :-
     length(Grades, Count),
     Avg is Sum / Count.
 
-% Реализация предиката вывода информации о каждом студенте: средний балл и статус:
-print_studens_summary :-
+print_students_summary :-
     findall(Student, grade(_, Student, _, _), All),
     sort(All, Students),
     forall(member(S, Students),
@@ -194,13 +191,11 @@ print_studens_summary :-
             format('~w: Average grade = ~2f, Status = ~w~n', [S, Avg, Status])
         )).
 
-% Реализация предиката подсчета количества студентов, не сдавших предмет:
 subject_failed_count(Subject, Count) :-
     findall(Student, (grade(_, Student, Subject, Grade), Grade < 4), Failed),
     sort(Failed, UniqueFailed),
     length(UniqueFailed, Count).
 
-% Реализация предиката вывода количества не сдавших студентов по каждому предмету:
 print_subject_fail_summary :-
     findall(Subject, grade(_, _, Subject, _), Subjects),
     sort(Subjects, UniqueSubjects),
@@ -210,8 +205,7 @@ print_subject_fail_summary :-
             format('Subject: ~w - Failed: ~d students~n', [Subj, Count])
         )).
 
-% Реализация предиката поиска и вывода студента (студентов) с максимальным средним баллом в группе:
-print_max_avgerage_in_group(Group) :-
+print_max_average_in_group(Group) :-
     findall(Student, grade(Group, Student, _, _), StudentsDup),
     sort(StudentsDup, Students),
     findall(Avg-Student, (
@@ -223,8 +217,7 @@ print_max_avgerage_in_group(Group) :-
     format('Group: ~w - Highest average grade: ~2f~n', [Group, MaxAvg]),
     format('Students: ~w~n~n', [TopStudents]).
 
-% Реализация предиката вывода студента (студентов) с максимальным средним баллом для каждой из групп:
 print_group_max_average :-
     findall(Group, grade(Group, _, _, _), Groups),
     sort(Groups, UniqueGroups),
-    forall(member(G, UniqueGroups), print_max_avgerage_in_group(G)).
+    forall(member(G, UniqueGroups), print_max_average_in_group(G)).

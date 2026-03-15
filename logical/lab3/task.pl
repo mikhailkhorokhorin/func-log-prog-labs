@@ -1,27 +1,22 @@
-% Реалиация предиката перемещения черного шара вправо на одну позицию (в соседнюю пустую лунку):
 move(State, NewState) :-
     append(Left, [b,'_'|Right], State),
     append(Left, ['_',b|Right], NewState).
 
-% Реалиация предиката перепрыгивания черного шара через один шар вправо (через b или w):
 move(State, NewState) :-
     append(Left, [b,X,'_'|Right], State),
     member(X,[b,w]),
     append(Left, ['_',X,b|Right], NewState).
 
-% Реалиация предиката перемещения белого шара влево на одну позицию (в соседнюю пустую лунку):
 move(State, NewState) :-
     append(Left, ['_',w|Right], State),
     append(Left, [w,'_'|Right], NewState).
 
-% Реалиация предиката перепрыгивание белого шара через один шар влево (через b или w):
 move(State, NewState) :-
     append(Left, ['_',X,w|Right], State),
     member(X,[b,w]),
     append(Left, [w,X,'_'|Right], NewState).
 
 
-% DFS (поиск в глубину):
 dfs(Goal, Goal, Path, Path).
 dfs(Current, Goal, Visited, Path) :-
     move(Current, Next),
@@ -33,7 +28,6 @@ solve_dfs(Start, Goal, Path) :-
     reverse(RevPath, Path).
 
 
-% BFS (поиск в ширину):
 bfs_queue([Goal-PathSoFar|_], Goal, PathSoFar).
 bfs_queue([Current-PathSoFar|RestQueue], Goal, Path) :-
     findall(Next-[Next|PathSoFar],
@@ -49,7 +43,6 @@ solve_bfs(Start, Goal, Path) :-
     reverse(RevPath, Path).
 
 
-% IDDFS (гибрид DFS и BFS):
 iddfs(Goal, Goal, Path, _, Path).
 iddfs(Current, Goal, Visited, Depth, Path) :-
     Depth > 0,
@@ -64,8 +57,6 @@ solve_iddfs(Start, Goal, Path) :-
     reverse(RevPath, Path),
     !.
 
-
-% Реализация предикатов вывода состояния 
 print_state([]) :- nl.
 print_state([H|T]) :- write(H), write(' '), print_state(T).
 
@@ -73,7 +64,6 @@ print_path([]).
 print_path([H|T]) :- print_state(H), print_path(T).
 
 
-% Реализация основного предиката решения
 solve :-
     Start = [b,b,b,b,'_',w,w,w],
     Goal  = [w,w,w,'_',b,b,b,b],
